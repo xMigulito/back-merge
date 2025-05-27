@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { userRoutes } from './routes/userRoutes';
+import { WebSocketServer, WebSocket } from 'ws';
+import { initSocket } from './socket';
 
 dotenv.config();
 
@@ -14,6 +16,11 @@ app.use('/api', userRoutes);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-}); 
+});
+
+initSocket(server);
+
+const wss = new WebSocketServer({ server: server });
+
