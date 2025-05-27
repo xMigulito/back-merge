@@ -24,3 +24,23 @@ initSocket(server);
 
 const wss = new WebSocketServer({ server: server });
 
+wss.on('connection', (ws: WebSocket) => {
+  console.log('Novo cliente conectado');
+
+  ws.on('message', (message: string) => {
+    const data = JSON.parse(message);
+    if (data.type === 'player-position') {
+      console.log(`Posição do jogador: ${JSON.stringify(data.position)}`);
+    } else if (data.type === 'enemy-position') {
+      console.log(`Posição do inimigo: ${JSON.stringify(data.position)}`);
+    } else if (data.type === 'collision') {
+      console.log('Colisão detectada:', JSON.stringify(data.collisionData));
+      // Lógica para validar colisão
+    }
+  });
+
+  ws.on('close', () => {
+    console.log('Cliente desconectado');
+  });
+});
+
